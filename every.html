@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*  every() 方法用于检测数组所有元素是否都符合指定条件（通过函数提供）。
+             every() 方法使用指定函数检测数组中的所有元素：
+             如果数组中检测到有一个元素不满足，则整个表达式返回 false ，且剩余的元素不会再进行检测。
+             如果所有元素都满足条件，则返回 true。
+             注意： every() 对空数组检测 返回 true。
+             注意： every() 不会改变原始数组。 */
+        Array.prototype.myEvery = function (cb, thisValue) {
+            if (typeof cb !== 'function') {
+                throw new Error('第一个参数应当是函数')
+            }
+            // let res = true; 空数组返回true
+            if (!this.length) {
+                return true
+            }
+            for (let i = 0; i < this.length; i++) {
+                if (!cb.call(thisValue, this[i], i, this)) {
+                    return false;
+                }
+            }
+            return true
+        }
+
+
+        const arr = [1, 2, 3, 4, 5]
+        console.log(arr.every(i => i >= 1));
+        console.log(arr.every(function (i) {
+            console.log(this);
+            return i >= 1
+        }, arr));
+        console.log(arr.every((i) => {
+            console.log('箭头函数', this);
+            return i >= 1
+        }, arr));
+        console.log(arr.myEvery(i => i >= 1));
+        console.log(arr.myEvery(i => i >= 2));
+        console.log(arr.myEvery(function (i) {
+            console.log(this);
+            return i >= 1
+        }, arr));
+
+    </script>
+</body>
+
+</html>

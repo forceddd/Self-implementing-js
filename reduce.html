@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /* 
+        reduce() 方法接收一个函数作为累加器，数组中的每个值（从左到右）开始缩减，最终计算为一个值。
+reduce() 可以作为一个高阶函数，用于函数的 compose。
+注意: reduce() 对于空数组是不会执行回调函数的。
+
+         */
+        Array.prototype.myReduce = function (cb, init = 0) {
+            if (typeof cb !== 'function') {
+                throw new Error('第一个参数应当是函数')
+            }
+            if (!this.length) {
+                throw new Error('数组不能为空数组')
+            }
+            for (let i = 0; i < this.length; i++) {
+                init = cb(init, this[i], i, this);
+            }
+            return init;
+        }
+
+        const data = {
+            person: {
+                name: 'forceddd',
+                age: 18,
+                size: 20,
+                friend: {
+                    name: '小马哥'
+                }
+            }
+        }
+        const arr = [1, 2, 3, 4, 5, 1, 1, 5, {}, {}, null, null, NaN, NaN]
+        const keys = ['person', 'friend', 'name']
+        const arr2 = arr.reduce((init, item) => {
+            // console.log(init);
+            init.includes(item) ? null : init.push(item)
+            return init;
+        }, [])
+        console.log(arr, arr2);
+
+        const name = keys.reduce((data, key) => data[key], data)
+        console.log(name);
+
+    </script>
+</body>
+
+</html>

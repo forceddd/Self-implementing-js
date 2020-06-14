@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /* slice() 方法可从已有的数组中返回选定的元素。
+            slice()方法可提取字符串的某个部分，并以新的字符串返回被提取的部分。
+            注意： slice() 方法不会改变原始数组 
+            如果传入的参数是负数 代表从后往前数 -1指的是最后一个
+            slice是浅拷贝
+            */
+        Array.prototype.mySlice = function (start, end = this.length) {
+            start = start < 0 ? this.length + start : start;
+            end = end < 0 ? this.length + end : end;
+            const res = [];
+            for (let i = start; i < end; i++) {
+                res.push(this[i])
+            }
+            return res
+        }
+        const arr = [1, 2, 3, 4, 5]
+        console.log(arr.slice(0));
+        console.log(arr.slice(-1));
+        console.log(arr.slice(-3, -1));//[3,4]
+        console.log(arr.slice('-3', -1));//[3,4]
+        console.log(arr.mySlice(0));
+        console.log(arr.mySlice(-1));
+        console.log(arr.mySlice(-3, -1));
+
+    </script>
+</body>
+
+</html>

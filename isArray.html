@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>isArray</title>
+</head>
+
+<body>
+
+    <script>
+        //
+        Array.myIsArray = function (item) {
+            return item instanceof Array
+        }
+        console.log(Array.myIsArray([1]));//true
+        console.log(Array.myIsArray([]));//true
+        console.log(Array.myIsArray(null));//false
+        console.log(Array.myIsArray({ id: 1 }));//false
+
+    </script>
+</body>
+
+</html>

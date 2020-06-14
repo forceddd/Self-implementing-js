@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*
+        filter() 方法创建一个新的数组，新数组中的元素是通过检查指定数组中符合条件的所有元素。
+
+        注意： filter() 不会对空数组进行检测。
+
+        注意： filter() 不会改变原始数组。
+         */
+        Array.prototype.myFilter = function (cb, thisValue) {
+            if (typeof cb !== 'function') {
+                throw new Error('第一个参数应当为函数')
+            }
+            const res = [];
+            if (this.length) {
+                for (let i = 0; i < this.length; i++) {
+                    cb.call(thisValue, this[i], i, this) ? res.push(this[i]) : null;
+                }
+            }
+            return res
+        }
+        const arr = [1, 2, 3]
+        console.log(arr.filter(i => i > 1));
+
+        /*
+        map() 方法返回一个新数组，数组中的元素为原始数组元素调用函数处理后的值。
+
+        map() 方法按照原始数组元素顺序依次处理元素。
+
+        注意： map() 不会对空数组进行检测。返回空数组
+
+        注意： map() 不会改变原始数组。
+         */
+        Array.prototype.myMap = function (cb, thisValue) {
+            if (typeof cb !== 'function') {
+                throw new Error('第一个参数应当为函数')
+            }
+            const res = [];
+            if (this.length) {
+                for (let i = 0; i < this.length; i++) {
+                    res.push(cb.call(thisValue, this[i], i, this))
+                }
+            }
+            return res
+        }
+        // console.log(arr.map(i => i > 1));
+        console.log(arr.myMap(i => i + 1));
+        console.log(arr.myMap(i => i > 1));//[false,true,true]
+
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        //浅拷贝 只复制第一层
+        function shadowCopy(obj) {
+            //首先判断obj类型
+            if (obj && typeof obj === 'object') {
+                //obj为对象或者数组
+                let newObj = obj instanceof Array ? [] : {};
+                Object.keys(obj).forEach(key => newObj[key] = obj[key])
+                return newObj
+
+            }
+            //普通数据类型
+            return obj
+        }
+        var obj = {
+            name: 'forceddd',
+            age: 18,
+            size: '20',
+            friend: {
+                name: 'alex',
+                age: 38
+            }
+        }
+        let newObj = shadowCopy(obj);
+        console.log(newObj);
+        arr = [1, 2, [1, 2]]
+        let newArr = shadowCopy(arr);
+        newArr[2].push(3);
+        console.log(arr);
+        //深拷贝 递归
+        function deepCopy(obj) {
+            if (obj && typeof obj === 'object') {
+                let newObj = obj instanceof Array ? [] : {};
+                Object.keys(obj).forEach(key => {
+                    //判断是自己的属性还是原型链上的属性
+
+                    if (obj.hasOwnProperty(key)) {
+                        //判断key是不是引用数据类型
+                        if (obj[key] && typeof obj[key] === 'object') {
+                            newObj[key] = deepCopy(obj[key])
+                        } else {
+                            newObj[key] = obj[key]
+                        }
+
+                    }
+
+                })
+                return newObj;
+            }
+            return obj
+        }
+        const deep = deepCopy(obj);
+        console.log(deep);
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*
+        splice() 方法用于添加或删除数组中的元素。
+        返回值是删除掉的数组元素 如果删除0个 返回空数组
+        注意：这种方法会改变原始数组。
+         */
+        const arr = [1, 2, 3, 4, 5]
+        /* console.log(arr.splice(1, 0), arr);//[]
+        console.log(arr.splice(1, 0, '666'), arr);//[]
+        console.log(arr.splice(1, 2), arr);//[2,3] */
+        Array.prototype.mySplice = function (start, count = 0, ...adds) {
+
+            adds = adds || []
+            const res = this.slice(start, start + count);
+            const This = [...this.slice(0, start), ...adds, ...this.slice(start + count)]
+            //当this长度大于This时，无法全部覆盖，先将多余的部分删除
+            while (this.length > This.length) {
+                this.pop()
+            }
+            //从start之后全部重新赋值，改变this
+            for (let i = start; i < This.length; i++) {
+                this[i] = This[i]
+            }
+            return res;
+        }
+        const arr1 = [1, 2, 3, 4, 5, 6, 7, 8]
+        const arr2 = [1, 2, 3, 4, 5, 6, 7, 8]
+        // console.log(arr1.mySplice(1, 0), arr1);
+        console.log(arr1.mySplice(1, 4, '6'), arr1);
+        console.log(arr2.splice(1, 4, '6'), arr2);
+        /* console.log(arr1.mySplice(1, 0, '666'), arr1);
+        console.log(arr1.mySplice(1, 2), arr1); */
+
+
+
+
+
+    </script>
+</body>
+
+</html>

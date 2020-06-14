@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //new关键字的原理
+        /* 
+        1.new关键字会首先创建一个空对象
+        2.将这个空对象的原型对象指向构造函数的原型属性，从而继承原型上的方法
+        3.将this指向这个空对象，执行构造函数中的代码，以获取私有属性
+        4.如果构造函数返回了一个对象res，就将该返回值res返回，如果返回值不是对象，就将创建的对象返回
+        理解了new的原理，手动实现就很简单了
+         */
+         //构造函数
+         function Person(name,sex){
+             this.name=name;
+             this.sex=sex
+         }
+         Person.prototype.getName=function(){
+            return this.name
+         }
+         //可以将构造函数和构造函数的参数传入
+         function myNew(Fn,...args){
+            //1.创建一个空对象，并将对象的__proto__指向构造函数的prototype 这里我两步一起做了
+            const obj=Object.create(Fn.prototype);
+            //2.将构造函数中的this指向obj，执行构造函数代码,获取返回值 
+            const res=Fn.apply(obj,args);
+            //3.判断返回值类型 不能使用typeof 你可以试试typeof null 
+            return res instanceof Object ?res:obj
+         }
+         const zcy=new Person('zcy','男');
+         const forceddd=myNew(Person,'forceddd','男');
+         console.log(zcy);
+         console.log(forceddd);
+         console.log(zcy.getName());
+         //共享原型上的方法
+         console.log(zcy.getName===forceddd.getName);//true
+         
+         
+    </script>
+</body>
+</html>

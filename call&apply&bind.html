@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>hello</h1>
+    <script>
+        //call apply
+        Function.prototype.myCall = function (thisValue, ...args) {
+            thisValue.fn = this;
+            let res = thisValue.fn(...args);
+            delete thisValue.fn;
+            return res
+        }
+        //apply 第二个参数是一个数组
+        Function.prototype.myApply = function (thisValue, args) {
+            thisValue.fn = this;
+            let res = args && args.length ? thisValue.fn(...args) : thisValue.fn()
+            delete thisValue.fn;
+            return res
+        }
+        //bind 返回一个函数 并且可以只接收原函数的一部分参数，让它返回的函数再去处理其他的参数
+        //不考虑构造函数
+        Function.prototype.myBind = function (thisValue, ...firstArgs) {
+            //thisValue是返回值函数要绑定的this firstArgs是第一次传入的参数数组
+            const currentFn = this;
+            //在执行myBind之后 得到的是一个函数体和调用myBind的函数体相同的函数 只是返回值函数中 绑定了this 再次执行时 才会绑定thisValue 
+            return function (...secondArgs) {
+                //secondArgs是第二次传入的参数数组
+                return currentFn.apply(thisValue, [...firstArgs, ...secondArgs])
+            }
+        }
+        const obj = {
+            type: 'obj'
+        }
+        /*  function add(a, b, c) {
+             console.log(this);
+             return a + b + c
+         }
+         console.log(add(1, 2, 3));
+ 
+         console.log(add.bind(null, 1)(2, 3));
+ 
+         console.log(add.bind(obj, 1)(2, 3));
+ 
+         console.log(add.myBind(null, 1)(2, 3));
+ 
+         console.log(add.myBind(obj, 1)(2, 3)); */
+        //既然是函数 就可以被new 操作符调用 被new操作符调用时 函数内部this指向当前实例
+        function Person(n, a, s) {
+            console.log(this);
+            this.name = n
+            this.age = a
+            this.sex = s
+        }
+        /* Person('小明', 18, '男')//this 指向window
+        const p = new Person('小花', 19, '男')//this 指向p
+        const bindPerson = Person.bind(obj)
+        const myBindPerson = Person.myBind(obj)
+        const p2 = new bindPerson('xiaogou', 17, 'male')//指向p2
+        const p3 = new myBindPerson('xiaogou', 17, 'male')//指向obj */
+        //所以再返回函数时，要判断是不是new操作符在操作
+        Function.prototype.myBind = function (thisValue, ...firstArgs) {
+            //thisValue是返回值函数要绑定的this firstArgs是第一次传入的参数数组
+            const currentFn = this;
+            //创建一个空的中转函数 用于检测是否使用了new
+            const tempFn = function () { }
+
+            //如果currentFn是一个构造函数 他的prototye存在 将中转函数的prototype指向当前函数的prototype 维护原型链关系
+            if (currentFn.prototype) {
+                tempFn.prototype = currentFn.prototype
+            }
+            //此时 将tempFn创建的实例 作为返回值函数BindFn的prototype 
+            //以后通过new bindFn() 创建的实例的__proto__就指向了 new Temp()
+            //new TempFn() 就被添加到了该原型链之上 就可以通过instanceof 判断对bindFn的调用有没有使用new
+            bindFn.prototype = new tempFn();//将来能够使用instanceof判断的关键语句
+
+            function bindFn(...secondArgs) {
+                //如果调用时使用了new 即 const p=new bindFn()形式 此时this指向p 又因为tempFn的实例是p的原型对象
+                //所以 p instanceof tempFn 应当为true 此时我们不应改变this指向
+                //如果是直接调用bindFn() this应该指向window 这时候我们需要绑定this
+                return currentFn.apply(this instanceof tempFn ? this : thisValue, [...firstArgs, ...secondArgs])
+
+            }
+            return bindFn
+        }
+        /* Function.prototype.myBind = function (thisValue, ...firstArgs) {
+            const currentFn = this;
+            const tempFn = function () { }
+            const bindFn = function (...secondArgs) {
+                return currentFn.apply(this instanceof tempFn ? this : thisValue, [...firstArgs, ...secondArgs])
+            }
+            if (currentFn.prototype) {
+                tempFn.prototype = currentFn.prototype
+            }
+            bindFn.prototype = new tempFn();
+            return bindFn
+        } */
+        Person('小明', 18, '男')//this 指向window
+        const p = new Person('小花', 19, '男')//this 指向p
+        const bindPerson = Person.bind(obj)
+        const myBindPerson = Person.myBind(obj)
+        const p2 = new bindPerson('xiaogou', 17, 'male')//指向p2
+        const p3 = new myBindPerson('xiaogou', 17, 'male')//指向p3 bindFn的实例
+
+
+
+
+        /*    function getName() {
+               return this.name
+           }
+           console.log(getName());
+
+           console.log(getName.call(obj));
+
+           console.log(getName.myCall(obj));
+           console.log(getName.myApply(obj, [1, 2])); */
+
+    </script>
+</body>
+
+</html>

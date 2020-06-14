@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        //some
+        /*
+        some() 方法用于检测数组中的元素是否满足指定条件（函数提供）。
+
+        some() 方法会依次执行数组的每个元素：
+
+        如果有一个元素满足条件，则表达式返回true , 剩余的元素不会再执行检测。
+        如果没有满足条件的元素，则返回false。
+        注意： some() 不会对空数组进行检测。空数组返回false
+
+        注意： some() 不会改变原始数组。
+         */
+        Array.prototype.mySome = function (cb, thisValue) {
+            if (typeof cb !== 'function') {
+                throw new Error('第一个参数应当为函数')
+            }
+            if (!this.length) {
+                return false
+            }
+            for (let i = 0; i < this.length; i++) {
+                if (cb.call(thisValue, this[i], i, this)) return true
+            }
+            return false
+        }
+        const arr = [1, 2, 3, 4, 5]
+        console.log(arr.some(i => i > 1), arr.mySome(i => i > 1));
+        console.log(arr.some(i => i > 5), arr.mySome(i => i > 5));
+
+
+
+    </script>
+</body>
+
+</html>

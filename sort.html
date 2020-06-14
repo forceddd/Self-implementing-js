@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*
+        sort() 方法用于对数组的元素进行排序。
+
+        排序顺序可以是字母或数字，并按升序或降序。
+
+        默认排序顺序为按字母升序。
+        sort() 方法，有一个可选参数，必须是函数，供它调用。那么就是个回调函数咯！
+
+        回调函数的参数要有两个：第一个参数的元素肯定在第二个参数的元素前面!!!
+
+        这个方法的排序是看回调函数的返回值：
+
+        如果返回值大于 0，则位置互换。
+        如果返回值小于 0，则位置不变。
+         */
+        Array.prototype.mySort = function (cb) {
+            if (this.length <= 1) return this
+            if (cb === undefined) {
+                //默认根据字符串大小比较 我采用的是冒泡排序 默认是升序
+                for (let i = 0; i < this.length; i++) {
+                    for (let j = 0; j < this.length - i - 1; j++) {
+                        [this[j], this[j + 1]] = String(this[j]) > String(this[j + 1]) ? [this[j + 1], this[j]] : [this[j], this[j + 1]]
+                    }
+                }
+
+            } else if (cb instanceof Function) {
+                for (let i = 0; i < this.length; i++) {
+                    for (let j = 0; j < this.length - i - 1; j++) {
+                        //>0 升序 <0降序
+                        // 如果j 比 j+1大 就交换位置 
+                        [this[j], this[j + 1]] = cb(this[j], this[j + 1]) > 0 ? [this[j + 1], this[j]] : [this[j], this[j + 1]]
+                    }
+                }
+            } else {
+                throw new Error('参数必须是函数')
+            }
+            return this
+        }
+        const arr = [1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 60, 100, 120, 140]
+        console.log(arr.sort());//[1, 10, 100, 120, 140, 2, 20, 3, 30, 4, 40, 5, 50, 60]
+        console.log(arr.mySort());
+        console.log(arr.sort((a, b) => a - b));
+        console.log(arr.mySort((a, b) => a - b));
+        console.log(arr.sort((a, b) => b - a));
+        console.log(arr.mySort((a, b) => b - a));
+
+
+    </script>
+</body>
+
+</html>

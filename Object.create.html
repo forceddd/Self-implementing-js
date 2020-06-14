@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        //Object.create()会将参数对象作为一个新创建的空对象的原型, 并返回这个空对象,
+        function objCreate(obj) {
+            //首先要判断传入的obj是不是对象
+            if (obj instanceof Object) {
+                let newObj = {};
+                newObj.__proto__ = obj;
+                return newObj;
+            }
+            throw new Error('必须传入一个对象')
+
+        }
+
+        //方式二
+        function objCreate2(obj) {
+
+            //首先要判断传入的obj是不是对象
+            if (obj instanceof Object) {
+                function Foo() { }
+                Foo.prototype = obj;
+                return new Foo();
+            }
+            throw new Error('必须传入一个对象')
+        }
+        const obj = {
+            name: 'forceddd',
+            get() {
+                console.log('get');
+
+            }
+        }
+        obj.__proto__.set = () => {
+            console.log('set');
+
+        }
+        const a1 = Object.create(obj);
+        const a2 = Object.create(obj);
+        const b1 = objCreate(obj);
+        const b2 = objCreate(obj);
+        a1.get();
+        b1.get();
+        console.log(a1.get === a2.get, b1.get === b2.get);//true true
+        console.log(a1 === a2);//false
+
+
+    </script>
+</body>
+
+</html>

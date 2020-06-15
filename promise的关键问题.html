@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*
+        1.如何改变promise的状态
+        （1）resolve() 如果当前是pending状态 就会转变成fulfilled
+        （2）reject() 如果当前是pending状态 就会转变成rejected
+        (3) 抛出异常 throw xxx  如果现在是pending状态 就会转变成rejected
+        2.一个promise指定了多个回调函数，都会调用吗
+        当promise改变为对应状态时，都会调用
+         */
+        new Promise(() => {
+            throw 3
+        }).catch(e => console.log(e)
+        )
+        const p = new Promise((resolve, reject) => {
+            // resolve(1)
+            reject(1)
+        })
+
+        p.then(() => console.log('第Yi个回调函数'), () => console.log('第一个失败回调函数'))
+        p.then(() => console.log('第二个回调函数'), () => console.log('第er个失败回调函数'))
+        p.then(() => console.log('第san个回调函数'), () => console.log('第san失败回调函数'))
+        p.catch(() => console.log('catch'))
+        p.catch(() => console.log('catch'))
+        /* 
+        3.改变promise状态和指定回调函数 谁先谁后
+        ①都有可能，一般是先指定回调函数再改变状态，但是也可以写先改变状态
+        ②如何先改变状态再指定回调函数
+        1.直接再promise内部同步改变状态
+        2.延时器
+        ③什么时候获取到数据
+        在执行回调函数时获取数据
+        1.
+         */
+        new Promise((reslove, reject) => {
+            setTimeout(() => {
+                reslove(1) //一秒之后将状态改变为成功态（同时指定数据），然后异步调用对应的回调函数
+            }, 1000);
+        }).then(//先指定了回调函数，promise会将对应的回调函数保存
+            data => { },
+            err => { }
+        )
+        new Promise((reslove, reject) => {
+            reslove(1) //先改变状态，状态改变为成功态（同时指定数据）
+        }).then(//后指定了回调函数，此时异步-调用对应的回调函数
+            data => { console.log('即使条件已经满足，依然是异步 后执行'); },
+            err => { }
+        )
+        console.log('先执行');
+
+
+        const p = new Promise((reslove, reject) => {
+            setTimeout(() => {
+                reslove(1) //一秒之后将状态改变为成功态（同时指定数据），然后异步调用对应的回调函数
+            }, 1000);
+        })
+        setTimeout(() => {
+            p.then(value => { })
+        }, 2000);
+        /*
+        4.p.then() 返回的Promise的结果状态有什么决定
+        由then指定的回调函数的结果决定
+        ①如果抛出异常，新的promise变成rejected
+        ②如果回调函数返回的是不是Promise的任意值string，undefined等等，新的promise变为fulfilled，数据是返回的值
+        ③如果回调函数返回的是一个promise对象。返回值promise对象的结果和状态就是新的promise的结果和状态
+         */
+        /*
+        5.链式调用
+        如果是异步操作 要用promise对象包装返回
+        6.promise异常穿透 在之前的then中只写了一个成功的回调，没有写失败的回调 相当于隐式的写了 err=>{throw err} 所以会穿透
+        ①当使用promise的then链式调用时，可以在最后指定失败的回调
+        ②前面的任何操作出现了异常都会传到最后的失败的回调函数中处理
+        7.中断promise链：当使用promise链式调用时，在中间中断，不再调用后面的回调函数
+        方法：在需要中断处 返回一个pending状态的promise  return new Promise(()={})
+         */
+
+    </script>
+</body>
+
+</html>
